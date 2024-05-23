@@ -40,7 +40,6 @@ int main() {
   rstr_pop_back(str);
   rstr_insert(str, 0, 1, 't', &allocator);
   rstr_erase(str, 0, 1);
-  rstr_replace(str, 0, 5, "hell", &allocator);
   rstr_replace(str, 0, 5, rsv_lit("hell"), &allocator);
   printf("size: %zu, cap: %zu, str: ", rstr_size(str),
          rstr_capacity(str));

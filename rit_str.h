@@ -270,6 +270,12 @@ void rstr_replace_with_location(const char *t_file, int t_line, char *t_rstr,
     rstr_push_back(t_rstr, (char)ch, t_allocator);                     \
   }
 
+/// @brief Extracts characters from a input stream until EOF is reached and stores them in a rstr
+#define rstr_getstream(t_istream, t_rstr, t_allocator)                     \
+  for (int ch = fgetc(t_istream); ch != EOF; ch = fgetc(t_istream)) { \
+    rstr_push_back(t_rstr, (char)ch, t_allocator);                    \
+  }
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////IMPLEMENTATION//////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
