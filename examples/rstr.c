@@ -41,6 +41,7 @@ int main() {
   rstr_insert(str, 0, 1, 't', &allocator);
   rstr_erase(str, 0, 1);
   rstr_replace(str, 0, 5, "hell", &allocator);
+  rstr_replace(str, 0, 5, rsv_lit("hell"), &allocator);
   printf("size: %zu, cap: %zu, str: ", rstr_size(str),
          rstr_capacity(str));
   for (char *it = rstr_begin(str); it < rstr_end(str); it++) {
@@ -51,8 +52,13 @@ int main() {
   printf("rstr_empty(str) = %s\n", rstr_empty(str) ? "true" : "false");
 
   rstr_resize(str2, 12, 'h', &allocator);
-  printf("size: %zu, cap: %zu, str: %s\n", rstr_size(str2),
+  printf("size: %zu, cap: %zu, str2: %s\n", rstr_size(str2),
          rstr_capacity(str2), str2);
+  rstr_getline(stdin, str2, &allocator);
+  FILE *file = fopen("input.txt", "r");
+  rstr_clear(str2);
+  rstr_getstream(file, str2, &allocator)
+  printf("str2: %s", str2);
 
   const char *cstr = rstr_data(str);  // same as rstr_cstr(str)
   (void)cstr;

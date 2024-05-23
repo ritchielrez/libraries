@@ -194,10 +194,10 @@ char *rstr_cp_with_location(const char *t_file, int t_line, char *t_rstr,
 #define rstr_back(t_rstr) (t_rstr[rstr_size(t_rstr) - 1])
 
 #define rstr_push_back(t_rstr, t_char, t_allocator)                 \
-  t_rstr[rstr_size(t_rstr)] = t_char;                               \
   if (rstr_capacity(t_rstr) <= rstr_size(t_rstr) + 1) {             \
     rstr_reserve(t_rstr, (rstr_size(t_rstr) + 1) * 2, t_allocator); \
   }                                                                 \
+  t_rstr[rstr_size(t_rstr)] = t_char;                               \
   rstr_get_metadata(t_rstr)->m_size++;                              \
   t_rstr[rstr_size(t_rstr)] = '\0'
 
@@ -263,6 +263,12 @@ inline void rstr_assign(char *t_rstr, rsv t_rsv,
 void rstr_replace_with_location(const char *t_file, int t_line, char *t_rstr,
                                 size_t t_index, size_t t_size, rsv t_rsv,
                                 rstr_allocator *t_allocator);
+
+/// @brief Extracts characters from a input stream until \n is reached and stores them in a rstr
+#define rstr_getline(t_istream, t_rstr, t_allocator)                   \
+  for (int ch = fgetc(t_istream); ch != '\n'; ch = fgetc(t_istream)) { \
+    rstr_push_back(t_rstr, (char)ch, t_allocator);                     \
+  }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////IMPLEMENTATION//////////////////////////////////
