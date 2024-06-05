@@ -91,12 +91,13 @@ inline bool rsv_index_bounds_check(const char *t_file, int t_line, rsv t_rsv,
 /// @brief Get the last element of an rsv
 #define rsv_back(t_rsv) (t_rsv.m_str[rsv_size(t_rsv) - 1])
 
-#define rstr_alloc(t_size, t_allocator) \
-  rstr_alloc_with_location(__FILE__, __LINE__, t_size, t_allocator)
+#define rstr_init(t_rstr, t_size, t_allocator) \
+  rstr_init_with_location(__FILE__, __LINE__, &t_rstr, t_size, t_allocator)
 
 /// @internal
-char *rstr_alloc_with_location(const char *t_file, int t_line, size_t t_size,
-                               rstr_allocator *t_allocator);
+void rstr_init_with_location(const char *t_file, int t_line,
+                             struct rstr *t_rstr, size_t t_size,
+                             rstr_allocator *t_allocator);
 
 /// @brief Set the capacity of a string.
 #define rstr_reserve(t_rstr, t_new_capacity, t_allocator) \
@@ -273,8 +274,9 @@ void rstr_replace_with_location(const char *t_file, int t_line,
 
 #ifdef RIT_STR_IMPLEMENTATION
 
-char *rstr_alloc_with_location(const char *t_file, int t_line, size_t t_size,
-                               rstr_allocator *t_allocator) {
+void rstr_init_with_location(const char *t_file, int t_line,
+                             struct rstr *t_rstr, size_t t_size,
+                             rstr_allocator *t_allocator) {
   size_t capacity = DEFAULT_STR_CAP < t_size * 2 ? t_size * 2 : DEFAULT_STR_CAP;
   t_rstr->m_data = (char *)t_allocator->alloc(t_allocator->m_ctx, capacity);
   if (!t_rstr->m_data) {
@@ -286,21 +288,18 @@ char *rstr_alloc_with_location(const char *t_file, int t_line, size_t t_size,
   t_rstr->m_capacity = capacity;
 }
 
-void rstr_realloc(const char *t_file, int t_line, char **t_rstr,
+void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
                   size_t t_new_capacity, rstr_allocator *t_allocator) {
-  if (t_new_capacity > rstr_capacity(*t_rstr)) {
-    rstr_metadata *arr = (rstr_metadata *)t_allocator->realloc(
-        t_allocator->m_ctx, rstr_get_metadata(*t_rstr),
-        sizeof(rstr_metadata) + rstr_capacity(*t_rstr),
-        sizeof(rstr_metadata) + t_new_capacity);
-    if (!arr) {
+  if (t_new_capacity > rstr_capacity((*t_rstr))) {
+    t_rstr->m_data =
+        (char *)t_allocator->realloc(t_allocator->m_ctx, t_rstr->m_data,
+                                     rstr_capacity((*t_rstr)), t_new_capacity);
+    if (!t_rstr->m_data) {
       fprintf(stderr, "Error: reallocation failed, file: %s, line: %d\n",
               t_file, t_line);
       exit(EXIT_FAILURE);
     }
-    arr += 1;
-    *t_rstr = (char *)arr;
-    rstr_get_metadata(*t_rstr)->m_capacity = t_new_capacity;
+    t_rstr->m_capacity = t_new_capacity;
   }
 }
 
