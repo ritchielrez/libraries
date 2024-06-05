@@ -137,13 +137,9 @@ inline bool rstr_index_bounds_check(const char *t_file, int t_line,
 }
 
 /// @param Check if a string is empty.
-inline bool rstr_empty(char *t_rstr) { return rstr_size(t_rstr) == 0; }
+#define rstr_empty(t_rstr) rstr_size(t_rstr) == 0
 
 /// @brief Empty out a string.
-inline void rstr_clear(char *t_rstr) {
-  rstr_get_metadata(t_rstr)->m_size = 0;
-  t_rstr[0] = '\0';
-}
 
 /// @brief Create a rstr.
 #define rstr(t_rstr, t_rsv, t_allocator)           \
