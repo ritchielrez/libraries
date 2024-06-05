@@ -32,7 +32,7 @@ rstr_allocator allocator = {libc_malloc, libc_free, libc_realloc, nullptr};
 int main() {
   rstr(str, rsv_lit("hello world"), &allocator);
 
-  rstr_cp(str2, 0, rstr_size(str), str, &allocator);
+  rstr_cp(str2, str, 0, rstr_size(str), &allocator);
   rstr_assign(str2, rsv_lit("Hello world"), &allocator);
   rstr_append_str(str2, rsv_lit("ello world"), &allocator);
 
@@ -41,8 +41,7 @@ int main() {
   rstr_insert(str, 0, 1, 't', &allocator);
   rstr_erase(str, 0, 1);
   rstr_replace(str, 0, 5, rsv_lit("hell"), &allocator);
-  printf("size: %zu, cap: %zu, str: ", rstr_size(str),
-         rstr_capacity(str));
+  printf("size: %zu, cap: %zu, str: ", rstr_size(str), rstr_capacity(str));
   for (char *it = rstr_begin(str); it < rstr_end(str); it++) {
     putchar(*it);
   }
@@ -52,7 +51,7 @@ int main() {
 
   rstr_resize(str2, 12, 'h', &allocator);
   printf("size: %zu, cap: %zu, str2: %s\n", rstr_size(str2),
-         rstr_capacity(str2), str2);
+         rstr_capacity(str2), rstr_data(str2));
   rstr_getline(stdin, str2, &allocator);
   FILE *file = fopen("input.txt", "r");
   rstr_clear(str2);
