@@ -54,9 +54,10 @@ int main() {
          rstr_capacity(str2), rstr_data(str2));
   rstr_getline(stdin, str2, &allocator);
   FILE *file = fopen("input.txt", "r");
-  rstr_clear(str2);
-  rstr_getstream(file, str2, &allocator)
-  printf("str2: %s", str2);
+  rstr_getstream(file, str2, &allocator) printf("str2: %s", rstr_data(str2));
+
+  rstr_free(str, &allocator);
+  rstr_free(str2, &allocator);
 
   const char *cstr = rstr_data(str);  // same as rstr_cstr(str)
   (void)cstr;
