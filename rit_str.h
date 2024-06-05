@@ -140,6 +140,9 @@ inline bool rstr_index_bounds_check(const char *t_file, int t_line,
 #define rstr_empty(t_rstr) rstr_size(t_rstr) == 0
 
 /// @brief Empty out a string.
+#define rstr_clear(t_rstr) \
+  t_rstr.m_size = 0;       \
+  t_rstr.m_data[0] = '\0'
 
 /// @brief Create a rstr.
 #define rstr(t_rstr, t_rsv, t_allocator)           \
