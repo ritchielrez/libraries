@@ -237,11 +237,9 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
 
 /// @param t_rstr Where to assign
 /// @param t_rsv What to assign
-inline void rstr_assign(char *t_rstr, rsv t_rsv,
-                        rstr_allocator *t_allocator) {
-  rstr_clear(t_rstr);
-  rstr_append_str(t_rstr, t_rsv, t_allocator);
-}
+#define rstr_assign(t_rstr, t_rsv, t_allocator) \
+  rstr_clear(t_rstr);                           \
+  rstr_append_str(t_rstr, t_rsv, t_allocator)
 
 /// @param t_index Starting index of the substring
 /// @param t_size Number of characters in the substring
