@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Disable MSVC warning 4702: unreachable code
+#pragma warning(disable : 4702)
+
 #define DEFAULT_STR_CAP 16
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -116,7 +119,7 @@ void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
 
 /// @brief Makes a non-binding request to make the capacity of a string equal to
 /// its size. In this library this is definied as a no-op function.
-inline void rstr_shrink_to_fit(struct rstr t_rstr) { (void)t_rstr; }
+#define rstr_shrink_to_fit(t_rstr) (void)t_rstr
 
 /// @brief Returns a pointer to a null-terminated character array with data
 /// equivalent to those stored in the string.
@@ -164,15 +167,15 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
                            struct rstr *t_rstr_other, size_t t_index,
                            size_t t_size, rstr_allocator *t_allocator);
 
-#define rstr_at(t_rstr, t_index)                                  \
-  (rstr_index_bounds_check(__FILE__, __LINE__, &t_rstr, t_index)) \
-      ? t_rstr.m_data[t_index]                                    \
-      : t_rstr.m_data[t_index]
+#define rstr_ret_ptr_at_index(t_rstr, t_index)                              \
+  ((t_index >= rstr_size(t_rstr) && t_index < 0)                            \
+       ? (fprintf(stderr,                                                   \
+                  "Error: array index out of bounds, file: %s, line: %d\n", \
+                  __FILE__, __LINE__),                                      \
+          exit(EXIT_FAILURE), &(t_rstr.m_data[t_index]))                    \
+       : &(t_rstr.m_data[t_index]))
 
-#define rstr_set(t_rstr, t_index, t_char)                             \
-  if (rstr_index_bounds_check(__FILE__, __LINE__, t_rstr, t_index)) { \
-    t_rstr[t_index] = t_char;                                         \
-  }
+#define rstr_at(t_rstr, t_index) (*(rstr_ret_ptr_at_index(t_rstr, t_index)))
 
 /// @brief Get the pointer to the first element of an array
 #define rstr_begin(t_rstr) (&(t_rstr.m_data[0]))
@@ -222,8 +225,8 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
   do {                                                                   \
     rstr_append_char(t_rstr, t_size, t_char, t_allocator);               \
     for (size_t i = rstr_size(t_rstr) - 1; i >= t_index + t_size; i--) { \
-      rstr_set(t_rstr, i, rstr_at(t_rstr, i - t_size));                  \
-      rstr_set(t_rstr, i - t_size, t_char);                              \
+      rstr_at(t_rstr, i) = rstr_at(t_rstr, i - t_size);                 \
+      rstr_at(t_rstr, i - t_size) = t_char;                             \
     }                                                                    \
   } while (0)
 
@@ -231,7 +234,7 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
 #define rstr_erase(t_rstr, t_index, t_size)                         \
   do {                                                              \
     for (size_t i = t_index + t_size; i < rstr_size(t_rstr); i++) { \
-      rstr_set(t_rstr, i - t_size, rstr_at(t_rstr, i));             \
+      rstr_at(t_rstr, i - t_size) = rstr_at(t_rstr, i);            \
     }                                                               \
     rstr_remove(t_rstr, t_size);                                    \
   } while (0)
@@ -322,7 +325,7 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
   rstr_init_with_location(t_file, t_line, t_rstr, t_size - t_index,
                           t_allocator);
   for (size_t i = 0, j = t_index; i < t_size; i++, j++) {
-    rstr_set(ret_rstr, i, rstr_at(t_rstr, j));
+    rstr_at((*t_rstr), i) = rstr_at((*t_rstr_other), j);
   }
 }
 
@@ -356,12 +359,16 @@ void rstr_replace_with_location(const char *t_file, int t_line,
     rstr_erase((*t_rstr), t_index, count);
   }
   for (size_t i = t_index, j = 0; j < rsv_size(t_rsv); i++, j++) {
-    rstr_set(t_rstr, i, rsv_at(t_rsv, j));
+    rstr_at((*t_rstr), i) = rsv_at(t_rsv, j);
   }
 }
 
 #endif  // RIT_STR_IMPLEMENTATION
 #endif  // RIT_STR_H_INCLUDED
+
+// Enable MSVC warning 4702: unreachable code
+#pragma warning(disable : 4702)
+
 /*
 The MIT License (MIT)
 
