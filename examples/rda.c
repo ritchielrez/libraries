@@ -77,7 +77,8 @@ int main() {
     printf("%d ", *it);
   }
   rda_resize(arr, 30, 1, &ctx_allocator);
-  printf("\n[Before swap]\n1st array: \n");
+  rda_append(arr, &ctx_allocator, 2, 2)
+      printf("\n[Before swap]\n1st array: \n");
   for (int *it = rda_begin(arr); it < rda_end(arr); it++) {
     printf("%d ", *it);
   }

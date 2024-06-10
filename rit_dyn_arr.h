@@ -5,6 +5,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,65 +22,65 @@ typedef struct {
   void *(*alloc)(void *, size_t);
   void (*free)(void *, void *);
   void *(*realloc)(void *, void *, size_t, size_t);
-  void *m_ctx;  // The arena, stack or etc where the memory would be allocated,
-                // NULL if none
+  void *m_ctx; // The arena, stack or etc where the memory would be allocated,
+               // NULL if none
 } rda_allocator;
 
 /// @brief Dynamic array struct
-#define rda_struct(t_type) \
-  struct {                 \
-    size_t m_size;         \
-    size_t m_capacity;     \
-    size_t m_objsize;      \
-    t_type *m_data;        \
+#define rda_struct(t_type)                                                     \
+  struct {                                                                     \
+    size_t m_size;                                                             \
+    size_t m_capacity;                                                         \
+    size_t m_objsize;                                                          \
+    t_type *m_data;                                                            \
   }
 
 #define rda_size(t_rda) t_rda.m_size
 
 #define rda_capacity(t_rda) t_rda.m_capacity
 
-#define rda_init(t_rda, t_size, t_objsize, t_allocator)                   \
-  do {                                                                    \
-    size_t capacity =                                                     \
-        DEFAULT_ARR_CAP < t_size * 2 ? t_size * 2 : DEFAULT_ARR_CAP;      \
-    t_rda.m_data =                                                        \
-        (t_allocator)->alloc((t_allocator)->m_ctx, capacity * t_objsize); \
-    if (!t_rda.m_data) {                                                  \
-      fprintf(stderr, "Error: allocation failed, file: %s, line: %d\n",   \
-              __FILE__, __LINE__);                                        \
-      exit(EXIT_FAILURE);                                                 \
-    }                                                                     \
-    t_rda.m_size = t_size;                                                \
-    t_rda.m_capacity = capacity;                                          \
-    t_rda.m_objsize = t_objsize;                                          \
+#define rda_init(t_rda, t_size, t_objsize, t_allocator)                        \
+  do {                                                                         \
+    size_t capacity =                                                          \
+        DEFAULT_ARR_CAP < t_size * 2 ? t_size * 2 : DEFAULT_ARR_CAP;           \
+    t_rda.m_data =                                                             \
+        (t_allocator)->alloc((t_allocator)->m_ctx, capacity * t_objsize);      \
+    if (!t_rda.m_data) {                                                       \
+      fprintf(stderr, "Error: allocation failed, file: %s, line: %d\n",        \
+              __FILE__, __LINE__);                                             \
+      exit(EXIT_FAILURE);                                                      \
+    }                                                                          \
+    t_rda.m_size = t_size;                                                     \
+    t_rda.m_capacity = capacity;                                               \
+    t_rda.m_objsize = t_objsize;                                               \
   } while (0)
 
 /// @brief Set the capacity of a array.
-#define rda_reserve(t_rda, t_new_capacity, t_allocator)                   \
-  if (t_new_capacity > rda_capacity(t_rda)) {                             \
-    t_rda.m_data = (t_allocator)                                          \
-                       ->realloc((t_allocator)->m_ctx, t_rda.m_data,      \
-                                 rda_capacity(t_rda) * t_rda.m_objsize,   \
-                                 t_new_capacity * t_rda.m_objsize);       \
-    if (!t_rda.m_data) {                                                  \
-      fprintf(stderr, "Error: reallocation failed, file: %s, line: %d\n", \
-              __FILE__, __LINE__);                                        \
-      exit(EXIT_FAILURE);                                                 \
-    }                                                                     \
-    t_rda.m_capacity = t_new_capacity;                                    \
+#define rda_reserve(t_rda, t_new_capacity, t_allocator)                        \
+  if (t_new_capacity > rda_capacity(t_rda)) {                                  \
+    t_rda.m_data = (t_allocator)                                               \
+                       ->realloc((t_allocator)->m_ctx, t_rda.m_data,           \
+                                 rda_capacity(t_rda) * t_rda.m_objsize,        \
+                                 t_new_capacity * t_rda.m_objsize);            \
+    if (!t_rda.m_data) {                                                       \
+      fprintf(stderr, "Error: reallocation failed, file: %s, line: %d\n",      \
+              __FILE__, __LINE__);                                             \
+      exit(EXIT_FAILURE);                                                      \
+    }                                                                          \
+    t_rda.m_capacity = t_new_capacity;                                         \
   }
 
-#define rda_swap(t_rda, t_rda_other)              \
-  do {                                            \
-    size_t tmp_size = rda_size(t_rda);            \
-    t_rda.m_size = rda_size(t_rda_other);         \
-    t_rda_other.m_size = tmp_size;                \
-    size_t tmp_capacity = rda_capacity(t_rda);    \
-    t_rda.m_capacity = rda_capacity(t_rda_other); \
-    t_rda_other.m_capacity = tmp_capacity;        \
-    void *tmp_data = rda_data(t_rda);             \
-    t_rda.m_data = rda_data(t_rda_other);         \
-    t_rda_other.m_data = tmp_data;                \
+#define rda_swap(t_rda, t_rda_other)                                           \
+  do {                                                                         \
+    size_t tmp_size = rda_size(t_rda);                                         \
+    t_rda.m_size = rda_size(t_rda_other);                                      \
+    t_rda_other.m_size = tmp_size;                                             \
+    size_t tmp_capacity = rda_capacity(t_rda);                                 \
+    t_rda.m_capacity = rda_capacity(t_rda_other);                              \
+    t_rda_other.m_capacity = tmp_capacity;                                     \
+    void *tmp_data = rda_data(t_rda);                                          \
+    t_rda.m_data = rda_data(t_rda_other);                                      \
+    t_rda_other.m_data = tmp_data;                                             \
   } while (0)
 
 /// @brief Makes a non-binding request to make the capacity of a array equal to
@@ -89,7 +90,7 @@ typedef struct {
 /// @brief Returns a pointer to the internal data of the rda struct.
 #define rda_data(t_rstr) t_rstr.m_data
 
-#define rda_free(t_rda, t_allocator) \
+#define rda_free(t_rda, t_allocator)                                           \
   (t_allocator)->free((t_allocator)->m_ctx, t_rda.m_data)
 
 /// @param Check if a array is empty.
@@ -99,8 +100,8 @@ typedef struct {
 #define rda_clear(t_rda) t_rda.m_size = 0
 
 /// @brief Create a rda.
-#define rda(t_type, t_rda, t_size, t_allocator) \
-  rda_struct(t_type) t_rda = {};                \
+#define rda(t_type, t_rda, t_size, t_allocator)                                \
+  rda_struct(t_type) t_rda = {};                                               \
   rda_init(t_rda, t_size, sizeof(t_type), t_allocator)
 
 /// @param t_rda Where to copy
@@ -126,12 +127,12 @@ typedef struct {
     rda_at(t_rda, i) = rda_at(t_rda_other, j);                                 \
   }
 
-#define rda_ret_ptr_at_index(t_rda, t_index)                                \
-  ((t_index >= rda_size(t_rda) && t_index < 0)                              \
-       ? (fprintf(stderr,                                                   \
-                  "Error: array index out of bounds, file: %s, line: %d\n", \
-                  __FILE__, __LINE__),                                      \
-          exit(EXIT_FAILURE), &(t_rda.m_data[t_index]))                     \
+#define rda_ret_ptr_at_index(t_rda, t_index)                                   \
+  ((t_index >= rda_size(t_rda) && t_index < 0)                                 \
+       ? (fprintf(stderr,                                                      \
+                  "Error: array index out of bounds, file: %s, line: %d\n",    \
+                  __FILE__, __LINE__),                                         \
+          exit(EXIT_FAILURE), &(t_rda.m_data[t_index]))                        \
        : &(t_rda.m_data[t_index]))
 
 #define rda_at(t_rda, t_index) (*(rda_ret_ptr_at_index(t_rda, t_index)))
@@ -146,53 +147,58 @@ typedef struct {
 /// @brief Get the last element of an array
 #define rda_back(t_rda) (t_rda.m_data[rda_size(t_rda) - 1])
 
-#define rda_push_back(t_rda, t_val, t_allocator)                \
-  if (rda_capacity(t_rda) <= rda_size(t_rda) + 1) {             \
-    rda_reserve(t_rda, (rda_size(t_rda) + 1) * 2, t_allocator); \
-  }                                                             \
-  t_rda.m_data[rda_size(t_rda)] = t_val;                        \
+#define rda_push_back(t_rda, t_val, t_allocator)                               \
+  if (rda_capacity(t_rda) <= rda_size(t_rda) + 1) {                            \
+    rda_reserve(t_rda, (rda_size(t_rda) + 1) * 2, t_allocator);                \
+  }                                                                            \
+  t_rda.m_data[rda_size(t_rda)] = t_val;                                       \
   t_rda.m_size++
 
 #define rda_pop_back(t_rda) t_rda.m_size--
 
-#define rda_append_val(t_rda, t_size, t_val, t_allocator) \
-  for (size_t i = 1; i <= t_size; i++) {                  \
-    rda_push_back(t_rda, t_val, t_allocator);             \
+#define rda_append_val(t_rda, t_size, t_val, t_allocator)                      \
+  for (size_t i = 1; i <= t_size; i++) {                                       \
+    rda_push_back(t_rda, t_val, t_allocator);                                  \
   }
 
-#define rda_append_arr(t_rda, t_arr, t_allocator)               \
-  for (size_t i = 0; i < sizeof(t_arr) / sizeof(arr[0]); i++) { \
-    rda_push_back(t_rda, t_arr[i], t_allocator);                \
+#define rda_append_arr(t_rda, t_arr, t_allocator)                              \
+  for (size_t i = 0; i < sizeof(t_arr) / sizeof(t_arr[0]); i++) {              \
+    rda_push_back(t_rda, t_arr[i], t_allocator);                               \
   }
+
+/// @brief Append variable number of values at the end of an array
+#define rda_append(t_rda, t_allocator, t_val1, ...)                            \
+  rda_append_arr(t_rda, ((__typeof__(t_val1)[]){t_val1, __VA_ARGS__}),         \
+                 t_allocator)
 
 /// @brief Remove elements from the end of the array
-#define rda_remove(t_rda, t_size)        \
-  for (size_t i = 1; i <= t_size; i++) { \
-    rda_pop_back(t_rda);                 \
+#define rda_remove(t_rda, t_count)                                             \
+  for (size_t i = 1; i <= t_count; i++) {                                      \
+    rda_pop_back(t_rda);                                                       \
   }
 
 /// @brief Changes the number of characters stored
-#define rda_resize(t_rda, t_size, t_val, t_allocator) \
-  rda_clear(t_rda);                                   \
+#define rda_resize(t_rda, t_size, t_val, t_allocator)                          \
+  rda_clear(t_rda);                                                            \
   rda_append_val(t_rda, t_size, t_val, t_allocator)
 
 /// @brief Insert characters in the array at t_index.
-#define rda_insert(t_rda, t_index, t_size, t_val, t_allocator)         \
-  do {                                                                 \
-    rda_append_val(t_rda, t_size, t_val, t_allocator);                 \
-    for (size_t i = rda_size(t_rda) - 1; i >= t_index + t_size; i--) { \
-      rda_at(t_rda, i) = rda_at(t_rda, i - t_size);                    \
-      rda_at(t_rda, i - t_size) = t_val;                               \
-    }                                                                  \
+#define rda_insert(t_rda, t_index, t_size, t_val, t_allocator)                 \
+  do {                                                                         \
+    rda_append_val(t_rda, t_size, t_val, t_allocator);                         \
+    for (size_t i = rda_size(t_rda) - 1; i >= t_index + t_size; i--) {         \
+      rda_at(t_rda, i) = rda_at(t_rda, i - t_size);                            \
+      rda_at(t_rda, i - t_size) = t_val;                                       \
+    }                                                                          \
   } while (0)
 
 /// @brief Remove characters in the array at t_index.
-#define rda_erase(t_rda, t_index, t_size)                         \
-  do {                                                            \
-    for (size_t i = t_index + t_size; i < rda_size(t_rda); i++) { \
-      rda_at(t_rda, i - t_size) = rda_at(t_rda, i);               \
-    }                                                             \
-    rda_remove(t_rda, t_size);                                    \
+#define rda_erase(t_rda, t_index, t_size)                                      \
+  do {                                                                         \
+    for (size_t i = t_index + t_size; i < rda_size(t_rda); i++) {              \
+      rda_at(t_rda, i - t_size) = rda_at(t_rda, i);                            \
+    }                                                                          \
+    rda_remove(t_rda, t_size);                                                 \
   } while (0)
 
 /// @param t_rda Where to assign
@@ -201,7 +207,7 @@ typedef struct {
 //   rda_clear(t_rda);                           \
 //   rda_append_str(t_rda, t_rsv, t_allocator)
 
-#endif  // RIT_DYN_ARR_H_INCLUDED
+#endif // RIT_DYN_ARR_H_INCLUDED
 
 // Enable MSVC warning 4702: unreachable code
 #pragma warning(disable : 4702)
