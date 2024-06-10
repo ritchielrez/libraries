@@ -95,6 +95,13 @@ int main() {
   rda_cp(int, arr3, arr, 0, rda_size(arr), &ctx_allocator);
   printf("\n3rd array(copy of the 1st one): \n");
   rda_for_each(it, arr3) { printf("%d ", *it); }
+  printf("\n\n");
+
+  // int tmp_arr[] = {1, 2, 3, 4, 5, 6};
+  // rda_assign_arr(arr, tmp_arr, &ctx_allocator);
+  rda_assign(arr, &ctx_allocator, 1, 2, 3, 4, 5, 6);
+  rda_for_each(it, arr) { printf("%d ", *it); }
+
   rda_free(arr, &ctx_allocator);
   rda_free(arr2, &ctx_allocator);
   rda_free(arr3, &ctx_allocator);

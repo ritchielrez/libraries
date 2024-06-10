@@ -192,7 +192,7 @@ typedef struct {
     }                                                                          \
   } while (0)
 
-/// @brief Remove characters in the array at t_index.
+/// @brief Remove characters in the array at t_index
 #define rda_erase(t_rda, t_index, t_size)                                      \
   do {                                                                         \
     for (size_t i = t_index + t_size; i < rda_size(t_rda); i++) {              \
@@ -201,11 +201,18 @@ typedef struct {
     rda_remove(t_rda, t_size);                                                 \
   } while (0)
 
-/// @param t_rda Where to assign
-/// @param t_rsv What to assign
-// #define rda_assign(t_rda, t_rsv, t_allocator) \
-//   rda_clear(t_rda);                           \
-//   rda_append_str(t_rda, t_rsv, t_allocator)
+/// @brief Assign t_count number of t_val's in an array
+#define rda_assign_val(t_rda, t_val, t_count, t_allocator)                     \
+  rda_clear(t_rda);                                                            \
+  rda_append_val(t_rda, t_val, t_count, t_allocator)
+
+#define rda_assign_arr(t_rda, t_arr, t_allocator)                              \
+  rda_clear(t_rda);                                                            \
+  rda_append_arr(t_rda, t_arr, t_allocator)
+
+#define rda_assign(t_rda, t_allocator, t_val1, ...)                            \
+  rda_clear(t_rda);                                                            \
+  rda_append(t_rda, t_allocator, t_val1, __VA_ARGS__)
 
 #endif // RIT_DYN_ARR_H_INCLUDED
 
