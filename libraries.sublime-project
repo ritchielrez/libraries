@@ -1,0 +1,22 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name": "build_msvc",
+			"selector": "source.c",
+			"file_patterns": ["*.c"],
+			// "file_regex": "^\\s*([A-Z]:\\.*?\\.c)\\(([0-9]*)\\)",
+			"file_regex": "^(.+?)\\((\\d+)\\)",
+			// "file_regex": "^\\s*([A-Z]:\\.*\\.c)\\((\\d+)\\)",
+			// "file_regex": "^\\s*(.+?)\\((\\d+)\\)",
+			// "file_regex": "^(.+?)\\((\\d+)\\)\\s*:\\s*(.*)$",
+			"cmd": ["build_msvc.bat", "$file", "&&", "$file_base_name.exe"],
+		}
+	]
+}
