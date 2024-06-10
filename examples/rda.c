@@ -40,10 +40,6 @@ void *libc_realloc(void *t_ctx, void *t_old_ptr, size_t t_old_size_in_bytes,
   return realloc(t_old_ptr, t_new_size_in_bytes);
 }
 
-#define rda_for_each(t_it, t_rda)                                              \
-  for (typeof(rda_begin(t_rda)) it = rda_begin(t_rda); it < rda_end(t_rda);    \
-       it++)
-
 Arena arena = {nullptr, nullptr};
 rda_allocator ctx_allocator = {libc_malloc, libc_free, libc_realloc, nullptr};
 

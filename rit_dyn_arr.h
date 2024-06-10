@@ -10,6 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if defined(__GNUC__)
+#define gettype typeof
+#elif defined(_MSC_VER)
+#define gettype __typeof__
+#endif
+
 #define DEFAULT_ARR_CAP 16
 
 // Disable MSVC warning 4702: unreachable code
@@ -168,8 +174,7 @@ typedef struct {
 
 /// @brief Append variable number of values at the end of an array
 #define rda_append(t_rda, t_allocator, t_val1, ...)                            \
-  rda_append_arr(t_rda, ((__typeof__(t_val1)[]){t_val1, __VA_ARGS__}),         \
-                 t_allocator)
+  rda_append_arr(t_rda, ((gettype(t_val1)[]){t_val1, __VA_ARGS__}), t_allocator)
 
 /// @brief Remove elements from the end of the array
 #define rda_remove(t_rda, t_count)                                             \
@@ -213,6 +218,10 @@ typedef struct {
 #define rda_assign(t_rda, t_allocator, t_val1, ...)                            \
   rda_clear(t_rda);                                                            \
   rda_append(t_rda, t_allocator, t_val1, __VA_ARGS__)
+
+#define rda_for_each(t_it, t_rda)                                              \
+  for (gettype(rda_begin(t_rda)) it = rda_begin(t_rda); it < rda_end(t_rda);   \
+       it++)
 
 #endif // RIT_DYN_ARR_H_INCLUDED
 
