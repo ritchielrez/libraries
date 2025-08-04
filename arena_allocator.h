@@ -3,6 +3,14 @@
 
 #define nullptr (void *)0
 
+#ifndef AAC_DEF
+#ifdef ARENA_ALLOCATOR_STATIC_DEF
+#define AAC_DEF static
+#else
+#define AAC_DEF extern
+#endif // ARENA_ALLOCATOR_STATIC_DEF
+#endif // AAC_DEF
+
 #ifndef ARENA_ALLOCATOR_INCLUDED
 #define ARENA_ALLOCATOR_INCLUDED
 
@@ -61,7 +69,7 @@ struct Arena {
 /// @brief Creates a new buffer, where chunks of bytes are allocated
 /// @param t_chunk_count Maximum number of chunks the buffer can hold
 /// @return Buffer*
-Buffer *buffer_new(size_t t_chunk_count);
+AAC_DEF Buffer *buffer_new(size_t t_chunk_count);
 
 /// @brief Frees up a buffer
 /// @param t_buffer The buffer to be freed
@@ -76,7 +84,7 @@ inline void buffer_free(Buffer *t_buffer) { free(t_buffer); }
 /// @param t_arena The arena where data gets allocated
 /// @param t_size_in_bytes The requested number of bytes to be allocated
 /// @return void*
-void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes);
+AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes);
 
 /// @brief Resize some old data insdie an arena
 ///
@@ -88,18 +96,19 @@ void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes);
 /// @param t_old_size_in_bytes The size of the old pointer
 /// @param t_new_size_in_bytes The size of the new pointer
 /// @return void*
-void *arena_realloc(Arena *t_arena, void *t_old_ptr, size_t t_old_size_in_bytes,
-                    size_t t_new_size_in_bytes);
+AAC_DEF void *arena_realloc(Arena *t_arena, void *t_old_ptr,
+                            size_t t_old_size_in_bytes,
+                            size_t t_new_size_in_bytes);
 
 /// @brief Resets the allocated chunk count of an arena
 /// @param t_arena The arena that will be resetted
 /// @return void
-void arena_reset(Arena *t_arena);
+AAC_DEF void arena_reset(Arena *t_arena);
 
 /// @brief Frees up an arena
 /// @param t_arena The arena that will be freed
 /// @return void
-void arena_free(Arena *t_arena);
+AAC_DEF void arena_free(Arena *t_arena);
 
 #endif // ARENA_ALLOCATOR_INCLUDED
 
@@ -107,7 +116,7 @@ void arena_free(Arena *t_arena);
 #ifndef ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 #define ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 
-Buffer *buffer_new(size_t t_chunk_count) {
+AAC_DEF Buffer *buffer_new(size_t t_chunk_count) {
   size_t size_in_bytes = sizeof(Buffer) + sizeof(uintptr_t) * t_chunk_count;
   Buffer *new_buffer = malloc(size_in_bytes);
 
@@ -118,7 +127,7 @@ Buffer *buffer_new(size_t t_chunk_count) {
   return new_buffer;
 }
 
-void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
+AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
   if (t_arena == nullptr) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
@@ -154,8 +163,9 @@ void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
   return result;
 }
 
-void *arena_realloc(Arena *t_arena, void *t_old_ptr, size_t t_old_size_in_bytes,
-                    size_t t_new_size_in_bytes) {
+AAC_DEF void *arena_realloc(Arena *t_arena, void *t_old_ptr,
+                            size_t t_old_size_in_bytes,
+                            size_t t_new_size_in_bytes) {
   if (t_arena == nullptr) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
@@ -180,7 +190,7 @@ void *arena_realloc(Arena *t_arena, void *t_old_ptr, size_t t_old_size_in_bytes,
   return result;
 }
 
-void arena_reset(Arena *t_arena) {
+AAC_DEF void arena_reset(Arena *t_arena) {
   if (t_arena == nullptr) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
@@ -193,7 +203,7 @@ void arena_reset(Arena *t_arena) {
   }
 }
 
-void arena_free(Arena *t_arena) {
+AAC_DEF void arena_free(Arena *t_arena) {
   if (t_arena == nullptr) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
