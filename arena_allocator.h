@@ -1,6 +1,8 @@
 // LICENSE
 // See end of the file for license information.
 
+#define nullptr (void *)0
+
 #ifndef ARENA_ALLOCATOR_INCLUDED
 #define ARENA_ALLOCATOR_INCLUDED
 
@@ -8,8 +10,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-
-#define nullptr (void *)0
 
 #define DEFAULT_CHUNK_MAX_COUNT 8192
 
