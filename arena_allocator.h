@@ -27,13 +27,13 @@ typedef struct Arena Arena;
 /// @param arena The arena where data gets allocated
 /// @param type The type of the array
 /// @param count The number of elements in the array
-#define arena_alloc_arr(arena, type, count) \
+#define arena_alloc_arr(arena, type, count)                                    \
   ((type *)arena_alloc(arena, sizeof(type) * count))
 
 /// @brief Allocates a struct in an arena
 /// @param arena The arena where data gets allocated
 /// @param type The struct
-#define arena_alloc_struct(arena, type) \
+#define arena_alloc_struct(arena, type)                                        \
   ((type *)arena_alloc(arena, sizeof(type)))
 
 // Disable warning C4200: nonstandard extension used: zero-sized array in
@@ -144,7 +144,8 @@ AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
     // starting buffer
     assert(arena->m_begin == nullptr);
     size_t chunk_max_count = DEFAULT_CHUNK_MAX_COUNT;
-    if (chunk_max_count < chunk_count) chunk_max_count = chunk_count;
+    if (chunk_max_count < chunk_count)
+      chunk_max_count = chunk_count;
     arena->m_active = buffer_new(chunk_max_count);
     arena->m_begin = arena->m_active;
   }
@@ -152,7 +153,8 @@ AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
   if (arena->m_active->m_chunk_current_count + chunk_count >
       arena->m_active->m_chunk_max_count) {
     size_t chunk_max_count = DEFAULT_CHUNK_MAX_COUNT;
-    if (chunk_max_count < chunk_count) chunk_max_count = chunk_count;
+    if (chunk_max_count < chunk_count)
+      chunk_max_count = chunk_count;
     arena->m_active->m_next = buffer_new(chunk_max_count);
     arena->m_active = arena->m_active->m_next;
   }
