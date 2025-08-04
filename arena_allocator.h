@@ -7,8 +7,7 @@
 #define ARENA_ALLOCATOR_INCLUDED
 
 #include <assert.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #define DEFAULT_CHUNK_MAX_COUNT 8192
