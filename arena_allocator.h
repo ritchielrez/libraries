@@ -105,6 +105,8 @@ void arena_free(Arena *t_arena);
 #endif // ARENA_ALLOCATOR_INCLUDED
 
 #ifdef ARENA_ALLOCATOR_IMPLEMENTATION
+#ifndef ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
+#define ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 
 Buffer *buffer_new(size_t t_chunk_count) {
   size_t size_in_bytes = sizeof(Buffer) + sizeof(uintptr_t) * t_chunk_count;
@@ -216,7 +218,8 @@ void arena_free(Arena *t_arena) {
   arena->m_active = nullptr;
 }
 
-#endif  // ARENA_ALLOCATOR_IMPLEMENTATION
+#endif // ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
+#endif // ARENA_ALLOCATOR_IMPLEMENTATION
 
 #undef nullptr
 
