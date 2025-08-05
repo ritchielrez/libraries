@@ -1,5 +1,10 @@
 // LICENSE
 // See end of the file for license information.
+
+#ifndef RSTR_INTERNAL_DEF
+#define RSTR_INTERNAL_DEF static inline
+#endif // RSTR_INTERNAL_DEF
+
 #ifndef RIT_STR_H_INCLUDED
 #define RIT_STR_H_INCLUDED
 
