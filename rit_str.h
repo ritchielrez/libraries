@@ -20,10 +20,6 @@
 
 #define DEFAULT_STR_CAP 16
 
-///////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////DECLARATION///////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
 /// @brief Custom allocator interface.
 /// Functions allocating memory takes a custom allocator based off this
 /// interface as a parameter.
@@ -74,16 +70,6 @@ static inline rsv rsv_rsv(rsv t_rsv) {
 /// @brief Access the string from rsv
 static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
 
-/// @internal
-inline bool rsv_index_bounds_check(const char *t_file, int t_line, rsv t_rsv,
-                                   size_t t_index) {
-  if (t_index < rsv_size((t_rsv))) return true;
-  fprintf(stderr,
-          "Error: string_view index is out of bounds, file: %s, line: %d\n",
-          t_file, t_line);
-  exit(EXIT_FAILURE);
-}
-
 #define rsv_at(t_rsv, t_index)                                 \
   (rsv_index_bounds_check(__FILE__, __LINE__, t_rsv, t_index)) \
       ? t_rsv.m_str[t_index]                                   \
@@ -111,10 +97,6 @@ void rstr_init_with_location(const char *t_file, int t_line,
 #define rstr_reserve(t_rstr, t_new_capacity, t_allocator) \
   rstr_realloc(__FILE__, __LINE__, &t_rstr, t_new_capacity, t_allocator)
 
-/// @internal
-void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
-                  size_t t_new_capacity, rstr_allocator *t_allocator);
-
 #define rstr_swap(t_rstr, t_rstr_other) \
   do {                                  \
     struct rstr tmp = t_rstr;           \
@@ -135,15 +117,6 @@ void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
 
 #define rstr_free(t_rstr, t_allocator) \
   (t_allocator)->free((t_allocator)->m_ctx, t_rstr.m_data)
-
-/// @internal
-inline bool rstr_index_bounds_check(const char *t_file, int t_line,
-                                    struct rstr *t_rstr, size_t t_index) {
-  if (t_index < rstr_size((*t_rstr))) return true;
-  fprintf(stderr, "Error: string index is out of bounds, file: %s, line: %d\n",
-          t_file, t_line);
-  exit(EXIT_FAILURE);
-}
 
 /// @param Check if a string is empty.
 #define rstr_empty(t_rstr) rstr_size(t_rstr) == 0
@@ -166,11 +139,6 @@ inline bool rstr_index_bounds_check(const char *t_file, int t_line,
   struct rstr t_rstr = {};                                                   \
   rstr_cp_with_location(__FILE__, __LINE__, &t_rstr, &t_rstr_other, t_index, \
                         t_index, t_allocator)
-
-///@internal
-void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
-                           struct rstr *t_rstr_other, size_t t_index,
-                           size_t t_size, rstr_allocator *t_allocator);
 
 #define rstr_ret_ptr_at_index(t_rstr, t_index)                              \
   ((t_index >= rstr_size(t_rstr) && t_index < 0)                            \
@@ -256,12 +224,6 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
   rstr_replace_with_location(__FILE__, __LINE__, &t_rstr, t_index, t_size, \
                              t_rsv, t_allocator)
 
-/// @internal
-void rstr_replace_with_location(const char *t_file, int t_line,
-                                struct rstr *t_rstr, size_t t_index,
-                                size_t t_size, rsv t_rsv,
-                                rstr_allocator *t_allocator);
-
 /// @brief Extracts characters from a input stream until \n is reached and
 /// stores them in a rstr
 #define rstr_getline(t_istream, t_rstr, t_allocator)                   \
@@ -276,15 +238,22 @@ void rstr_replace_with_location(const char *t_file, int t_line,
     rstr_push_back(t_rstr, (char)ch, t_allocator);                    \
   }
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////IMPLEMENTATION//////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+/// Internal functions
 
-#ifdef RIT_STR_IMPLEMENTATION
+RSTR_INTERNAL_DEF bool rsv_index_bounds_check(const char *t_file, int t_line,
+                                              rsv t_rsv, size_t t_index) {
+  if (t_index < rsv_size((t_rsv)))
+    return true;
+  fprintf(stderr,
+          "Error: string_view index is out of bounds, file: %s, line: %d\n",
+          t_file, t_line);
+  exit(EXIT_FAILURE);
+}
 
-void rstr_init_with_location(const char *t_file, int t_line,
-                             struct rstr *t_rstr, size_t t_size,
-                             rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void rstr_init_with_location(const char *t_file, int t_line,
+                                               struct rstr *t_rstr,
+                                               size_t t_size,
+                                               rstr_allocator *t_allocator) {
   size_t capacity = DEFAULT_STR_CAP < t_size * 2 ? t_size * 2 : DEFAULT_STR_CAP;
   t_rstr->m_data = (char *)t_allocator->alloc(t_allocator->m_ctx, capacity);
   if (!t_rstr->m_data) {
@@ -296,8 +265,9 @@ void rstr_init_with_location(const char *t_file, int t_line,
   t_rstr->m_capacity = capacity;
 }
 
-void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
-                  size_t t_new_capacity, rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void rstr_realloc(const char *t_file, int t_line,
+                                    struct rstr *t_rstr, size_t t_new_capacity,
+                                    rstr_allocator *t_allocator) {
   if (t_new_capacity > rstr_capacity((*t_rstr))) {
     t_rstr->m_data =
         (char *)t_allocator->realloc(t_allocator->m_ctx, t_rstr->m_data,
@@ -311,9 +281,11 @@ void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
   }
 }
 
-void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
-                           struct rstr *t_rstr_other, size_t t_index,
-                           size_t t_size, rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void rstr_cp_with_location(const char *t_file, int t_line,
+                                             struct rstr *t_rstr,
+                                             struct rstr *t_rstr_other,
+                                             size_t t_index, size_t t_size,
+                                             rstr_allocator *t_allocator) {
   if (t_index > rstr_size((*t_rstr_other))) {
     fprintf(stderr,
             "Error: starting index of substring out of bounds of the string, "
@@ -334,10 +306,10 @@ void rstr_cp_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
   }
 }
 
-void rstr_replace_with_location(const char *t_file, int t_line,
-                                struct rstr *t_rstr, size_t t_index,
-                                size_t t_size, rsv t_rsv,
-                                rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void
+rstr_replace_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
+                           size_t t_index, size_t t_size, rsv t_rsv,
+                           rstr_allocator *t_allocator) {
   if (t_index > rstr_size((*t_rstr))) {
     fprintf(stderr,
             "Error: starting index of substring out of bounds of the string, "
@@ -368,8 +340,7 @@ void rstr_replace_with_location(const char *t_file, int t_line,
   }
 }
 
-#endif  // RIT_STR_IMPLEMENTATION
-#endif  // RIT_STR_H_INCLUDED
+#endif // RIT_STR_H_INCLUDED
 
 // Enable MSVC warning 4702: unreachable code
 #pragma warning(disable : 4702)
