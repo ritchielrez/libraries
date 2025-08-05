@@ -50,15 +50,15 @@ typedef struct {
 #define rsv_size(t_rsv) t_rsv.m_size
 
 /// @brief Create a rsv from c string
-rsv rsv_lit(char *t_cstr) {
+static inline rsv rsv_lit(char *t_cstr) {
   return (rsv){.m_size = strlen(t_cstr), .m_str = t_cstr};
 }
 /// @brief Create a rsv from rstr
-rsv rsv_rstr(struct rstr t_rstr) {
+static inline rsv rsv_rstr(struct rstr t_rstr) {
   return (rsv){.m_size = rstr_size(t_rstr), .m_str = t_rstr.m_data};
 }
 /// @brief Create a rsv from rsv
-rsv rsv_rsv(rsv t_rsv) {
+static inline rsv rsv_rsv(rsv t_rsv) {
   return (rsv){.m_size = rsv_size(t_rsv), .m_str = t_rsv.m_str};
 }
 
@@ -67,7 +67,7 @@ rsv rsv_rsv(rsv t_rsv) {
   t_rsv.m_size = rsv_size(t_rstr_other)
 
 /// @brief Access the string from rsv
-const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
+static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
 
 /// @internal
 inline bool rsv_index_bounds_check(const char *t_file, int t_line, rsv t_rsv,
