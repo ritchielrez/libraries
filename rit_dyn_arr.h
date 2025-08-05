@@ -172,6 +172,10 @@ typedef struct {
     rda_push_back(t_rda, t_arr[i], t_allocator);                               \
   }
 
+/// @brief Append a dynamic array at the end of an array
+#define rda_append_rda(t_rda, t_rda_other, t_allocator)                        \
+  rda_for_each(it, t_rda_other) { rda_push_back(t_rda, *it, t_allocator); }
+
 /// @brief Append variable number of values at the end of an array
 #define rda_append(t_rda, t_allocator, t_val1, ...)                            \
   rda_append_arr(t_rda, ((gettype(t_val1)[]){t_val1, __VA_ARGS__}), t_allocator)
