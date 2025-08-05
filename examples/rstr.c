@@ -58,7 +58,7 @@ int main() {
   rstr_free(str, &allocator);
   rstr_free(str2, &allocator);
 
-  const char *cstr = rstr_data(str);  // same as rstr_cstr(str)
+  const char *cstr = rstr_data(str); // same as rstr_cstr(str)
   (void)cstr;
   // May cause program to crash, you are not suppose to free this pointer.
   // free(cstr);
