@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../rit_dyn_arr_v2.h"
+#include "../rit_dyn_arr.h"
 
 #define ARENA_ALLOCATOR_IMPLEMENTATION
 #include "../arena_allocator.h"
