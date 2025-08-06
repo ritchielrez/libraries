@@ -22,7 +22,7 @@
 #pragma warning(disable : 4702)
 
 #ifdef RIT_STR_H_INCLUDED
-typedef rit_str_allocator rda_allocator;
+typedef rstr_allocator rda_allocator;
 #else
 /// @brief Custom allocator interface.
 /// Functions allocating memory takes a custom allocator based off this
