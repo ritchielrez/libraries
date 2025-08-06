@@ -21,6 +21,9 @@
 // Disable MSVC warning 4702: unreachable code
 #pragma warning(disable : 4702)
 
+#ifdef RIT_STR_H_INCLUDED
+typedef rit_str_allocator rda_allocator;
+#else
 /// @brief Custom allocator interface.
 /// Functions allocating memory takes a custom allocator based off this
 /// interface as a parameter.
@@ -31,6 +34,7 @@ typedef struct {
   void *m_ctx; // The arena, stack or etc where the memory would be allocated,
                // NULL if none
 } rda_allocator;
+#endif // RIT_STR_H_INCLUDED
 
 /// @brief Dynamic array struct
 #define rda_struct(t_type)                                                     \

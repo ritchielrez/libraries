@@ -20,6 +20,9 @@
 
 #define DEFAULT_STR_CAP 16
 
+#ifdef RIT_DYN_ARR_H_INCLUDED
+typedef rda_allocator rstr_allocator;
+#else
 /// @brief Custom allocator interface.
 /// Functions allocating memory takes a custom allocator based off this
 /// interface as a parameter.
@@ -30,6 +33,7 @@ typedef struct {
   void *m_ctx; // The arena, stack or etc where the memory would be allocated,
                // NULL if none
 } rstr_allocator;
+#endif // RIT_DYN_ARR_H_INCLUDED
 
 /// @brief Owning reference to a string
 struct rstr {
