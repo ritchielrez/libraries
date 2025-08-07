@@ -12,8 +12,6 @@
 #ifndef ARENA_ALLOCATOR_INCLUDED
 #define ARENA_ALLOCATOR_INCLUDED
 
-#define nullptr (void *)0
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -110,20 +108,17 @@ AAC_DEF void arena_reset(Arena *t_arena);
 /// @return void
 AAC_DEF void arena_free(Arena *t_arena);
 
-#undef nullptr
 #endif // ARENA_ALLOCATOR_INCLUDED
 
 #ifdef ARENA_ALLOCATOR_IMPLEMENTATION
 #ifndef ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 #define ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 
-#define nullptr (void *)0
-
 AAC_DEF Buffer *buffer_new(size_t t_chunk_count) {
   size_t size_in_bytes = sizeof(Buffer) + sizeof(uintptr_t) * t_chunk_count;
   Buffer *new_buffer = malloc(size_in_bytes);
 
-  new_buffer->m_next = nullptr;
+  new_buffer->m_next = NULL;
   new_buffer->m_chunk_max_count = t_chunk_count;
   new_buffer->m_chunk_current_count = 0;
 
@@ -131,7 +126,7 @@ AAC_DEF Buffer *buffer_new(size_t t_chunk_count) {
 }
 
 AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
-  if (t_arena == nullptr) {
+  if (t_arena == NULL) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
   }
@@ -142,10 +137,10 @@ AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
   t_size_in_bytes = t_size_in_bytes + (sizeof(uintptr_t) - 1);
   size_t chunk_count = t_size_in_bytes / sizeof(uintptr_t);
 
-  if (arena->m_active == nullptr) {
+  if (arena->m_active == NULL) {
     // If there is no active buffer in an arena, there also should not be a
     // starting buffer
-    assert(arena->m_begin == nullptr);
+    assert(arena->m_begin == NULL);
     size_t chunk_max_count = DEFAULT_CHUNK_MAX_COUNT;
     if (chunk_max_count < chunk_count)
       chunk_max_count = chunk_count;
@@ -171,7 +166,7 @@ AAC_DEF void *arena_alloc(Arena *t_arena, size_t t_size_in_bytes) {
 AAC_DEF void *arena_realloc(Arena *t_arena, void *t_old_ptr,
                             size_t t_old_size_in_bytes,
                             size_t t_new_size_in_bytes) {
-  if (t_arena == nullptr) {
+  if (t_arena == NULL) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
   }
@@ -196,27 +191,27 @@ AAC_DEF void *arena_realloc(Arena *t_arena, void *t_old_ptr,
 }
 
 AAC_DEF void arena_reset(Arena *t_arena) {
-  if (t_arena == nullptr) {
+  if (t_arena == NULL) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
   }
 
   Buffer *current_buffer = t_arena->m_begin;
-  while (current_buffer != nullptr) {
+  while (current_buffer != NULL) {
     current_buffer->m_chunk_current_count = 0;
     current_buffer = current_buffer->m_next;
   }
 }
 
 AAC_DEF void arena_free(Arena *t_arena) {
-  if (t_arena == nullptr) {
+  if (t_arena == NULL) {
     fprintf(stderr, "Error, no valid arena was provided\n");
     exit(EXIT_FAILURE);
   }
   Arena *arena = (Arena *)t_arena;
 
   Buffer *current_buffer = arena->m_begin;
-  while (current_buffer->m_next != nullptr) {
+  while (current_buffer->m_next != NULL) {
     Buffer *next_buffer = current_buffer->m_next;
     current_buffer->m_chunk_max_count = 0;
     current_buffer->m_chunk_current_count = 0;
@@ -228,11 +223,10 @@ AAC_DEF void arena_free(Arena *t_arena) {
   // because this ensures that by accessing any freed pointers
   // does not cause undefined behaviours, even though accessing
   // null values do cause them too, it is more easily debuggable.
-  arena->m_begin = nullptr;
-  arena->m_active = nullptr;
+  arena->m_begin = NULL;
+  arena->m_active = NULL;
 }
 
-#undef nullptr
 #endif // ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 #endif // ARENA_ALLOCATOR_IMPLEMENTATION
 
