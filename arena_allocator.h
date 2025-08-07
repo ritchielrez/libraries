@@ -1,8 +1,6 @@
 // LICENSE
 // See end of the file for license information.
 
-#define nullptr (void *)0
-
 #ifndef AAC_DEF
 #ifdef ARENA_ALLOCATOR_STATIC_DEF
 #define AAC_DEF static
@@ -13,6 +11,8 @@
 
 #ifndef ARENA_ALLOCATOR_INCLUDED
 #define ARENA_ALLOCATOR_INCLUDED
+
+#define nullptr (void *)0
 
 #include <assert.h>
 #include <stdio.h>
@@ -110,11 +110,14 @@ AAC_DEF void arena_reset(Arena *t_arena);
 /// @return void
 AAC_DEF void arena_free(Arena *t_arena);
 
+#undef nullptr
 #endif // ARENA_ALLOCATOR_INCLUDED
 
 #ifdef ARENA_ALLOCATOR_IMPLEMENTATION
 #ifndef ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 #define ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
+
+#define nullptr (void *)0
 
 AAC_DEF Buffer *buffer_new(size_t t_chunk_count) {
   size_t size_in_bytes = sizeof(Buffer) + sizeof(uintptr_t) * t_chunk_count;
@@ -229,10 +232,9 @@ AAC_DEF void arena_free(Arena *t_arena) {
   arena->m_active = nullptr;
 }
 
+#undef nullptr
 #endif // ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
 #endif // ARENA_ALLOCATOR_IMPLEMENTATION
-
-#undef nullptr
 
 /*
 The MIT License (MIT)
