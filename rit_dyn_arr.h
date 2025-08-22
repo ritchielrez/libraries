@@ -138,7 +138,7 @@ typedef struct {
   }
 
 #define rda_ret_ptr_at_index(t_rda, t_index)                                   \
-  ((t_index >= rda_size(t_rda) && t_index < 0)                                 \
+  ((t_index >= rda_size(t_rda) || t_index < 0)                                 \
        ? (fprintf(stderr,                                                      \
                   "Error: array index out of bounds, file: %s, line: %d\n",    \
                   __FILE__, __LINE__),                                         \
