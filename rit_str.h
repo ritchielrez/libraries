@@ -10,6 +10,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#define RSV_NULL (rsv){.m_size = 0, .m_str = ""}
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
