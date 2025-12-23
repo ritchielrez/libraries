@@ -54,7 +54,7 @@ typedef struct {
 
 /// @brief Create a rsv from c string
 static inline rsv rsv_lit(char *t_cstr) {
-  return (rsv){.m_size = strlen(t_cstr), .m_str = t_cstr};
+  return (rsv){.m_size = sizeof(t_cstr) - 1, .m_str = t_cstr};
 }
 /// @brief Create a rsv from rstr
 static inline rsv rsv_rstr(struct rstr t_rstr) {
