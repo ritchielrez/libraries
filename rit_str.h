@@ -224,6 +224,7 @@ static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
 /// @brief Extracts characters from a input stream until \n is reached and
 /// stores them in a rstr
 #define rstr_getline(t_istream, t_rstr, t_allocator)                           \
+  rstr(t_rstr, rsv_lit(""), t_allocator);                                      \
   for (int ch = fgetc(t_istream); ch != '\n'; ch = fgetc(t_istream)) {         \
     rstr_push_back(t_rstr, (char)ch, t_allocator);                             \
   }
@@ -231,6 +232,7 @@ static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
 /// @brief Extracts characters from a input stream until EOF is reached and
 /// stores them in a rstr
 #define rstr_getstream(t_istream, t_rstr, t_allocator)                         \
+  rstr(t_rstr, rsv_lit(""), t_allocator);                                      \
   for (int ch = fgetc(t_istream); ch != EOF; ch = fgetc(t_istream)) {          \
     rstr_push_back(t_rstr, (char)ch, t_allocator);                             \
   }

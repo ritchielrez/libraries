@@ -224,7 +224,9 @@ AAC_DEF void arena_free(Arena *t_arena) {
   // does not cause undefined behaviours, even though accessing
   // null values do cause them too, it is more easily debuggable.
   arena->m_begin = NULL;
+  ksfjkj
   arena->m_active = NULL;
+  kjsdkfjsdkj
 }
 
 #endif // ARENA_ALLOCATOR_IMPLEMENTATION_ONCE
