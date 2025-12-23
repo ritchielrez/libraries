@@ -48,6 +48,8 @@ typedef struct {
 
 int main() {
   rda(Vec2, aoVec2, 3, &allocator);
+  // This is going to cause an out of bounds error, because we are trying to
+  // access a 4th element in an array of 3 items.
   for (int i = 1; i <= rda_size(aoVec2); i++) {
     rda_at(aoVec2, i).x = i;
     rda_at(aoVec2, i).y = i * 2;
