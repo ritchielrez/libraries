@@ -51,9 +51,12 @@ int main() {
   rstr_resize(str2, 12, 'h', &allocator);
   printf("size: %zu, cap: %zu, str2: %s\n", rstr_size(str2),
          rstr_capacity(str2), rstr_data(str2));
-  rstr_getline(stdin, str2, &allocator);
+  printf("str2: %s\n", rstr_data(str2));
+  rstr_getline(stdin, str3, &allocator);
+  printf("str3: %s\n", rstr_data(str3));
   FILE *file = fopen("input.txt", "r");
-  rstr_getstream(file, str2, &allocator) printf("str2: %s", rstr_data(str2));
+  rstr_getstream(file, str4, &allocator);
+  printf("str4 (from input.txt): %s", rstr_data(str4));
 
   rstr_free(str, &allocator);
   rstr_free(str2, &allocator);
