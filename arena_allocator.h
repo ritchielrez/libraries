@@ -201,6 +201,7 @@ AAC_DEF void arena_reset(Arena *t_arena) {
     current_buffer->m_chunk_current_count = 0;
     current_buffer = current_buffer->m_next;
   }
+  t_arena->m_active = t_arena->m_begin;
 }
 
 AAC_DEF void arena_free(Arena *t_arena) {
