@@ -212,7 +212,7 @@ AAC_DEF void arena_free(Arena *t_arena) {
   Arena *arena = (Arena *)t_arena;
 
   Buffer *current_buffer = arena->m_begin;
-  while (current_buffer->m_next != NULL) {
+  while (current_buffer != NULL) {
     Buffer *next_buffer = current_buffer->m_next;
     current_buffer->m_chunk_max_count = 0;
     current_buffer->m_chunk_current_count = 0;
