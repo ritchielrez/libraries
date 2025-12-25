@@ -13,6 +13,7 @@
 #define ARENA_ALLOCATOR_INCLUDED
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
