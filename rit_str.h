@@ -1,6 +1,10 @@
 // LICENSE
 // See end of the file for license information.
 
+#ifndef RSTR_INTERNAL_DEF
+#define RSTR_INTERNAL_DEF static inline
+#endif // RSTR_INTERNAL_DEF
+
 #ifndef RIT_STR_H_INCLUDED
 #define RIT_STR_H_INCLUDED
 
@@ -35,15 +39,15 @@ typedef struct {
 
 /// @brief Owning reference to a string
 struct rstr {
-  size_t m_size;
-  size_t m_capacity;
-  char *m_data;
+  size_t m_size;     // Do not modify this, this is private
+  size_t m_capacity; // Do not modify this, this is private
+  char *m_data;      // Do not modify this, this is private
 };
 
 /// @brief Non owning reference to a string
 typedef struct {
-  size_t m_size;
-  char *m_str;
+  size_t m_size; // Do not modify this, this is private
+  char *m_str;   // Do not modify this, this is private
 } rsv;
 
 #define rstr_size(t_rstr) t_rstr.m_size
@@ -107,7 +111,7 @@ static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
 
 /// @brief Returns a pointer to a null-terminated character array with data
 /// equivalent to those stored in the string.
-#define rstr_cstr(t_rstr) t_rstr.m_data
+#define rstr_cstr(t_rstr) (const char *)t_rstr.m_data
 /// @brief Returns a pointer to a null-terminated character array with data
 /// equivalent to those stored in the string.
 #define rstr_data(t_rstr) t_rstr.m_data
@@ -238,8 +242,8 @@ static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
   }
 
 /// @internal
-inline bool rsv_index_bounds_check(const char *t_file, int t_line, rsv t_rsv,
-                                   size_t t_index) {
+RSTR_INTERNAL_DEF bool rsv_index_bounds_check(const char *t_file, int t_line,
+                                              rsv t_rsv, size_t t_index) {
   if (t_index < rsv_size((t_rsv)))
     return true;
   fprintf(stderr,
@@ -249,9 +253,10 @@ inline bool rsv_index_bounds_check(const char *t_file, int t_line, rsv t_rsv,
 }
 
 /// @internal
-inline void rstr_init_with_location(const char *t_file, int t_line,
-                                    struct rstr *t_rstr, size_t t_size,
-                                    rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void rstr_init_with_location(const char *t_file, int t_line,
+                                               struct rstr *t_rstr,
+                                               size_t t_size,
+                                               rstr_allocator *t_allocator) {
   size_t capacity = DEFAULT_STR_CAP < t_size * 2 ? t_size * 2 : DEFAULT_STR_CAP;
   t_rstr->m_data = (char *)t_allocator->alloc(t_allocator->m_ctx, capacity);
   if (!t_rstr->m_data) {
@@ -264,8 +269,9 @@ inline void rstr_init_with_location(const char *t_file, int t_line,
 }
 
 /// @internal
-inline void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
-                         size_t t_new_capacity, rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void rstr_realloc(const char *t_file, int t_line,
+                                    struct rstr *t_rstr, size_t t_new_capacity,
+                                    rstr_allocator *t_allocator) {
   if (t_new_capacity > rstr_capacity((*t_rstr))) {
     t_rstr->m_data =
         (char *)t_allocator->realloc(t_allocator->m_ctx, t_rstr->m_data,
@@ -280,10 +286,11 @@ inline void rstr_realloc(const char *t_file, int t_line, struct rstr *t_rstr,
 }
 
 /// @internal
-inline void rstr_cp_with_location(const char *t_file, int t_line,
-                                  struct rstr *t_rstr,
-                                  struct rstr *t_rstr_other, size_t t_index,
-                                  size_t t_size, rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void rstr_cp_with_location(const char *t_file, int t_line,
+                                             struct rstr *t_rstr,
+                                             struct rstr *t_rstr_other,
+                                             size_t t_index, size_t t_size,
+                                             rstr_allocator *t_allocator) {
   if (t_index > rstr_size((*t_rstr_other))) {
     fprintf(stderr,
             "Error: starting index of substring out of bounds of the string, "
@@ -305,10 +312,10 @@ inline void rstr_cp_with_location(const char *t_file, int t_line,
 }
 
 /// @internal
-inline void rstr_replace_with_location(const char *t_file, int t_line,
-                                       struct rstr *t_rstr, size_t t_index,
-                                       size_t t_size, rsv t_rsv,
-                                       rstr_allocator *t_allocator) {
+RSTR_INTERNAL_DEF void
+rstr_replace_with_location(const char *t_file, int t_line, struct rstr *t_rstr,
+                           size_t t_index, size_t t_size, rsv t_rsv,
+                           rstr_allocator *t_allocator) {
   if (t_index > rstr_size((*t_rstr))) {
     fprintf(stderr,
             "Error: starting index of substring out of bounds of the string, "
