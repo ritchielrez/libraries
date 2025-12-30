@@ -60,6 +60,8 @@ int main() {
 
   rstr_free(str, &allocator);
   rstr_free(str2, &allocator);
+  rstr_free(str3, &allocator);
+  rstr_free(str4, &allocator);
 
   const char *cstr = rstr_data(str); // same as rstr_cstr(str)
   (void)cstr;
