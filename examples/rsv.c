@@ -36,5 +36,6 @@ int main() {
   puts(sv.m_str);
   puts(sv1.m_str);
   puts(sv2.m_str);
+  rstr_free(str, &allocator);
   return 0;
 }
