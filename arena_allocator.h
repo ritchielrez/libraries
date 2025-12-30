@@ -70,11 +70,6 @@ struct Arena {
 /// @return Buffer*
 AAC_DEF Buffer *buffer_new(size_t t_chunk_count);
 
-/// @brief Frees up a buffer
-/// @param t_buffer The buffer to be freed
-/// @return void
-inline void buffer_free(Buffer *t_buffer) { free(t_buffer); }
-
 /// @brief Allocate some data inside an arena.
 ///
 /// The allocated data are stored in a buffer.
