@@ -142,7 +142,7 @@ static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
                         t_index, t_allocator)
 
 #define rstr_ret_ptr_at_index(t_rstr, t_index)                                 \
-  ((t_index >= rstr_size(t_rstr) && t_index < 0)                               \
+  ((t_index >= rstr_size(t_rstr))                                              \
        ? (fprintf(stderr,                                                      \
                   "Error: array index out of bounds, file: %s, line: %d\n",    \
                   __FILE__, __LINE__),                                         \
