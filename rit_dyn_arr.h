@@ -3,8 +3,6 @@
 #ifndef RIT_DYN_ARR_H_INCLUDED
 #define RIT_DYN_ARR_H_INCLUDED
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
