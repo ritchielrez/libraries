@@ -97,6 +97,7 @@ int main() {
   // rda_assign_arr(arr, tmp_arr, &ctx_allocator);
   rda_assign(arr, &ctx_allocator, 1, 2, 3, 4, 5, 6);
   rda_for_each(it, arr) { printf("%d ", *it); }
+  putchar('\n');
 
   rda_free(arr, &ctx_allocator);
   rda_free(arr2, &ctx_allocator);
