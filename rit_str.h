@@ -292,7 +292,7 @@ static inline void rstr_resize(struct rstr *t_rstr, size_t t_size, char t_char,
 
 /// @brief Insert characters in the array at t_index.
 static inline void rstr_insert(struct rstr *t_rstr, size_t t_index,
-                               size_t t_size, size_t t_char,
+                               size_t t_size, char t_char,
                                rstr_allocator *t_allocator) {
   rstr_append_char(t_rstr, t_size, t_char, t_allocator);
   for (size_t i = rstr_size(t_rstr) - 1; i >= t_index + t_size; i--) {
