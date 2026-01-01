@@ -46,8 +46,8 @@ struct rstr {
 
 /// @brief Non owning reference to a string
 typedef struct {
-  size_t m_size; // Do not modify this, this is private
-  char *m_str;   // Do not modify this, this is private
+  size_t m_size;           // Do not modify this, this is private
+  const char *const m_str; // Do not modify this, this is private
 } rsv;
 
 #define rstr_size(t_rstr) t_rstr.m_size
