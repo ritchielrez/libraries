@@ -33,6 +33,11 @@
 *.exe
 *.out
 *.app
+examples/arena_allocator
+examples/rda
+examples/rda_aos
+examples/rstr
+examples/rsv
 
 # Folder
 build/
