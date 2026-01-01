@@ -29,13 +29,13 @@ void *libc_realloc(void *t_ctx, void *t_old_ptr, size_t t_old_size_in_bytes,
 rstr_allocator allocator = {libc_malloc, libc_free, libc_realloc, nullptr};
 
 int main() {
-  rstr(str, rsv_lit("rstr"), &allocator);
-  rsv sv = rsv_lit("C string");
-  rsv sv1 = rsv_rstr(str);
-  rsv sv2 = rsv_rsv(rsv_lit("rsv"));
-  puts(sv.m_str);
-  puts(sv1.m_str);
-  puts(sv2.m_str);
-  rstr_free(str, &allocator);
+  rstr(str, rsv_cstr("rstr", 4), &allocator);
+  rsv sv = rsv_cstr("C string", 8);
+  rsv sv1 = rsv_rstr(&str);
+  rsv sv2 = rsv_rsv(rsv_cstr("rsv", 3));
+  puts(rsv_get(sv));
+  puts(rsv_get(sv1));
+  puts(rsv_get(sv2));
+  rstr_free(&str, &allocator);
   return 0;
 }

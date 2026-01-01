@@ -29,41 +29,44 @@ void *libc_realloc(void *t_ctx, void *t_old_ptr, size_t t_old_size_in_bytes,
 rstr_allocator allocator = {libc_malloc, libc_free, libc_realloc, nullptr};
 
 int main() {
-  rstr(str, rsv_lit("hello world"), &allocator);
+  char c_str[5] = {'H', 'e', 'l', 'l', 'o'};
+  rstr(str, rsv_cstr(c_str, 5), &allocator);
 
-  rstr_cp(str2, str, 0, rstr_size(str), &allocator);
-  rstr_assign(str2, rsv_lit("Hello world"), &allocator);
-  rstr_append_str(str2, rsv_lit("ello world"), &allocator);
+  rstr_cp(str2, str, 0, rstr_size(&str), &allocator);
+  rstr_assign(&str2, rsv_cstr("Hello world", 11), &allocator);
+  rstr_append_str(&str2, rsv_cstr("ello world", 10), &allocator);
 
-  rstr_push_back(str, '1', &allocator);
-  rstr_pop_back(str);
-  rstr_insert(str, 0, 1, 't', &allocator);
-  rstr_erase(str, 0, 1);
-  rstr_replace(str, 0, 5, rsv_lit("hell"), &allocator);
-  printf("size: %zu, cap: %zu, str: ", rstr_size(str), rstr_capacity(str));
-  for (char *it = rstr_begin(str); it < rstr_end(str); it++) {
+  rstr_push_back(&str, '1', &allocator);
+  rstr_pop_back(&str);
+  rstr_insert(&str, 0, 1, 't', &allocator);
+  rstr_erase(&str, 0, 1);
+  rstr_replace(&str, 0, 5, rsv_cstr("hell", 4), &allocator);
+  printf("size: %zu, cap: %zu, str: ", rstr_size(&str), rstr_capacity(&str));
+  for (const char *it = rstr_begin(&str); it < rstr_end(&str); it++) {
     putchar(*it);
   }
   printf("\n");
-  rstr_clear(str);
-  printf("rstr_empty(str) = %s\n", rstr_empty(str) ? "true" : "false");
+  rstr_clear(&str);
+  printf("rstr_empty(str) = %s\n", rstr_empty(&str) ? "true" : "false");
 
-  rstr_resize(str2, 12, 'h', &allocator);
-  printf("size: %zu, cap: %zu, str2: %s\n", rstr_size(str2),
-         rstr_capacity(str2), rstr_data(str2));
-  printf("str2: %s\n", rstr_data(str2));
-  rstr_getline(stdin, str3, &allocator);
-  printf("str3: %s\n", rstr_data(str3));
+  rstr_resize(&str2, 12, 'h', &allocator);
+  printf("size: %zu, cap: %zu, str2: %s\n", rstr_size(&str2),
+         rstr_capacity(&str2), rstr_data(&str2));
+  printf("str2: %s\n", rstr_data(&str2));
+  rstr(str3, RSV_NULL, &allocator);
+  rstr_getline(stdin, &str3, &allocator);
+  printf("str3: %s\n", rstr_data(&str3));
   FILE *file = fopen("input.txt", "r");
-  rstr_getstream(file, str4, &allocator);
-  printf("str4 (from input.txt): %s", rstr_data(str4));
+  rstr(str4, RSV_NULL, &allocator);
+  rstr_getstream(file, &str4, &allocator);
+  printf("str4 (from input.txt): %s", rstr_data(&str4));
 
-  rstr_free(str, &allocator);
-  rstr_free(str2, &allocator);
-  rstr_free(str3, &allocator);
-  rstr_free(str4, &allocator);
+  rstr_free(&str, &allocator);
+  rstr_free(&str2, &allocator);
+  rstr_free(&str3, &allocator);
+  rstr_free(&str4, &allocator);
 
-  const char *cstr = rstr_data(str); // same as rstr_cstr(str)
+  const char *cstr = rstr_data(&str); // same as rstr_cstr(str)
   (void)cstr;
   // May cause program to crash, you are not suppose to free this pointer.
   // free(cstr);
