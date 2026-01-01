@@ -2,7 +2,7 @@
 // See end of the file for license information.
 
 #ifndef RSTR_INTERNAL_DEF
-#define RSTR_INTERNAL_DEF static inline
+#define RSTR_INTERNAL_DEF static
 #endif // RSTR_INTERNAL_DEF
 
 #ifndef RIT_STR_H_INCLUDED
