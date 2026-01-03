@@ -58,16 +58,22 @@ static inline size_t rstr_capacity(struct rstr *t_rstr) {
 
 static inline size_t rsv_size(rsv t_rsv) { return t_rsv.m_size; }
 
-/// @brief Create a rsv from a string literal. Do not use this for strings that
-/// are stored somewhere in the stack of heap. This important to understand
-/// because for length counting `sizeof()` is used which only works for string
-/// literals. `strlen()` is not used because it relies on `\0` which is unsafe.
+/// @brief Create a rsv from a string literal.
+/// Do not use this for strings that are stored somewhere in the stack of heap.
+/// This important to understand because for length counting `sizeof()` is used
+/// which only works for string literals. `strlen()` is not used because it
+/// relies on `\0` which is unsafe.
 #define rsv_lit(t_lit)                                                         \
   (rsv) { .m_size = sizeof(t_lit) - 1, .m_str = (t_lit) }
 
 /// @brief Create a rsv from c string
+/// The length is going to be `t_len` if the null character was not found in the
+/// first `t_len`bytes of `t_cstr`
 static inline rsv rsv_cstr(char *t_cstr, size_t t_len) {
-  return (rsv){.m_size = t_len, .m_str = (const char *const)t_cstr};
+  size_t len = 0;
+  for (; len < t_len && t_cstr[len] != '\0'; len++) {
+  }
+  return (rsv){.m_size = len, .m_str = (const char *const)t_cstr};
 }
 /// @brief Create a rsv from rstr
 static inline rsv rsv_rstr(struct rstr *t_rstr) {

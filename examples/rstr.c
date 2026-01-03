@@ -30,7 +30,9 @@ rstr_allocator allocator = {libc_malloc, libc_free, libc_realloc, nullptr};
 
 int main() {
   // Non-null terminated strings work fine, as the length needs to be specified
-  // with `rsv_cstr()`.
+  // with `rsv_cstr()`. The length can be bigger than the actual length of the
+  // string when the `rstr` or `rsv` is being constructed. The length given to
+  // `rsv_cstr()` is the maximum possible length of the c string.
   char cstr[5] = {'H', 'e', 'l', 'l', 'o'};
   rstr(str, rsv_cstr(cstr, 5), &allocator);
 
