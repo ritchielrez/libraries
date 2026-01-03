@@ -63,8 +63,7 @@ static inline size_t rsv_size(rsv t_rsv) { return t_rsv.m_size; }
 /// This important to understand because for length counting `sizeof()` is used
 /// which only works for string literals. `strlen()` is not used because it
 /// relies on `\0` which is unsafe.
-#define rsv_lit(t_lit)                                                         \
-  (rsv) { .m_size = sizeof(t_lit) - 1, .m_str = (t_lit) }
+#define rsv_lit(t_lit) ((rsv){.m_size = sizeof(t_lit) - 1, .m_str = (t_lit)})
 
 /// @brief Create a rsv from c string
 /// The length is going to be `t_len` if the null character was not found in the
