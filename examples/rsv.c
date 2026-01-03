@@ -29,10 +29,16 @@ void *libc_realloc(void *t_ctx, void *t_old_ptr, size_t t_old_size_in_bytes,
 rstr_allocator allocator = {libc_malloc, libc_free, libc_realloc, nullptr};
 
 int main() {
-  rstr(str, rsv_cstr("rstr", 4), &allocator);
-  rsv sv = rsv_cstr("C string", 8);
+  // Non-null terminated strings work fine, as the length needs to be specified
+  // with `rsv_cstr()`.
+  char cstr[] = {'r', 's', 't', 'r'};
+  rstr(str, rsv_cstr(cstr, 4), &allocator);
+  // For string literals, `rsv_lit()` can be used. However, due to use of
+  // `sizeof()` for length calculations, they cannot be used for c strings that
+  // are stored in stack or heap.
+  rsv sv = rsv_lit("C string");
   rsv sv1 = rsv_rstr(&str);
-  rsv sv2 = rsv_rsv(rsv_cstr("rsv", 3));
+  rsv sv2 = rsv_rsv(rsv_lit("rsv"));
   puts(rsv_get(sv));
   puts(rsv_get(sv1));
   puts(rsv_get(sv2));
