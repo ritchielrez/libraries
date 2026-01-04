@@ -8,8 +8,6 @@
 #ifndef RIT_STR_H_INCLUDED
 #define RIT_STR_H_INCLUDED
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #define RSV_NULL (rsv){.m_size = 0, .m_str = ""}
 
 #include <stdbool.h>
