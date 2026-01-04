@@ -88,10 +88,17 @@ static inline rsv rsv_rsv(rsv t_rsv) {
 /// @brief Access a possibly non null-terminated string from rsv
 static inline const char *rsv_data(rsv t_rsv) { return t_rsv.m_str; }
 
+/// @brief A helper macro to print `rsv` without relyin on null terminator
+/// character
+#define rsv_fmt(t_rsv) (int)(t_rsv).m_size, (t_rsv).m_str
+
+static inline void rsv_print(rsv t_rsv) { printf("%.*s", rsv_fmt(t_rsv)); }
+static inline void rsv_println(rsv t_rsv) { printf("%.*s\n", rsv_fmt(t_rsv)); }
+
 /// @internal
-RSTR_INTERNAL_DEF inline bool _rsv_index_bounds_check(const char *t_file,
-                                                      int t_line, rsv t_rsv,
-                                                      size_t t_index) {
+RSTR_INTERNAL_DEF
+inline bool _rsv_index_bounds_check(const char *t_file, int t_line, rsv t_rsv,
+                                    size_t t_index) {
   if (t_index < rsv_size(t_rsv))
     return true;
   fprintf(stderr,
@@ -179,6 +186,17 @@ static inline const char *rstr_cstr(struct rstr *t_rstr) {
 /// with data equivalent to those stored in the string.
 static inline const char *rstr_data(struct rstr *t_rstr) {
   return t_rstr->m_data;
+}
+
+/// @brief A helper macro to print `rstr` without relyin on null terminator
+/// character
+#define rstr_fmt(t_rstr) (int)(t_rstr)->m_size, (t_rstr)->m_data
+
+static inline void rstr_print(struct rstr *t_rstr) {
+  printf("%.*s", rstr_fmt(t_rstr));
+}
+static inline void rstr_println(struct rstr *t_rstr) {
+  printf("%.*s\n", rstr_fmt(t_rstr));
 }
 
 static inline void rstr_free(struct rstr *t_rstr, rstr_allocator *t_allocator) {

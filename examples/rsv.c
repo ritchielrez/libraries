@@ -39,9 +39,11 @@ int main() {
   rsv sv = rsv_lit("C string");
   rsv sv1 = rsv_rstr(&str);
   rsv sv2 = rsv_rsv(rsv_lit("rsv"));
-  puts(rsv_data(sv));
-  puts(rsv_data(sv1));
-  puts(rsv_data(sv2));
+  // The print statements below do not rely on null terminated character to
+  // print strings. Instead, they use length of the string stored inside `rsv`.
+  rsv_println(sv);
+  printf("%.*s\n", rsv_fmt(sv1));
+  rsv_println(sv2);
   rstr_free(&str, &allocator);
   return 0;
 }

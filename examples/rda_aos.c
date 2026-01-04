@@ -53,7 +53,7 @@ int main() {
   rda_push_back(rdaRsv, rsv_lit("Message: "), &allocator);
   rda_append(rdaRsv, &allocator, rsv_lit("Hello"), rsv_lit("World"),
              rsv_lit("from"), rsv_lit("C"));
-  rda_for_each(it, rdaRsv) { puts(rsv_data(*it)); }
+  rda_for_each(it, rdaRsv) { rsv_println(*it); }
   // This is going to cause an out of bounds error, because we are trying to
   // access a 4th element in an array of 3 items.
   for (size_t i = 1; i <= rda_size(rdaVec2); i++) {

@@ -57,16 +57,19 @@ int main() {
   printf("rstr_empty(str) = %s\n", rstr_empty(&str) ? "true" : "false");
 
   rstr_resize(&str2, 12, 'h', &allocator);
-  printf("size: %zu, cap: %zu, str2: %s\n", rstr_size(&str2),
-         rstr_capacity(&str2), rstr_data(&str2));
-  printf("str2: %s\n", rstr_data(&str2));
+  // `%.s` allows printf to print strings based on a given length instead of
+  // relying on null terminated character.
+  printf("size: %zu, cap: %zu, str2: %*.s\n", rstr_size(&str2),
+         rstr_capacity(&str2), rstr_fmt(&str2));
+  printf("str2: ");
+  rstr_println(&str2);
   rstr(str3, RSV_NULL, &allocator);
   rstr_getline(stdin, &str3, &allocator);
-  printf("str3: %s\n", rstr_data(&str3));
+  printf("str3: %.*s\n", rstr_fmt(&str3));
   FILE *file = fopen("input.txt", "r");
   rstr(str4, RSV_NULL, &allocator);
   rstr_getstream(file, &str4, &allocator);
-  printf("str4 (from input.txt): %s", rstr_data(&str4));
+  printf("str4 (from input.txt): %.*s", rstr_fmt(&str4));
 
   rstr_free(&str, &allocator);
   rstr_free(&str2, &allocator);
