@@ -86,7 +86,7 @@ static inline rsv rsv_rsv(rsv t_rsv) {
   (t_rsv).m_size = rsv_size(t_rstr_other)
 
 /// @brief Access a possibly non null-terminated string from rsv
-static inline const char *rsv_get(rsv t_rsv) { return t_rsv.m_str; }
+static inline const char *rsv_data(rsv t_rsv) { return t_rsv.m_str; }
 
 /// @internal
 RSTR_INTERNAL_DEF inline bool _rsv_index_bounds_check(const char *t_file,
