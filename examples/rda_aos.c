@@ -50,16 +50,15 @@ typedef struct {
 int main() {
   rda(Vec2, rdaVec2, 3, &allocator);
   rda(rsv, rdaRsv, 0, &allocator);
-  rsv arrRsv[] = {rsv_lit("Hello"), rsv_lit("World"), rsv_lit("from"),
-                  rsv_lit("C")};
   rda_push_back(rdaRsv, rsv_lit("Message: "), &allocator);
-  rda_append_arr(rdaRsv, arrRsv, &allocator);
+  rda_append(rdaRsv, &allocator, rsv_lit("Hello"), rsv_lit("World"),
+             rsv_lit("from"), rsv_lit("C"));
   rda_for_each(it, rdaRsv) { puts(rsv_get(*it)); }
   // This is going to cause an out of bounds error, because we are trying to
   // access a 4th element in an array of 3 items.
   for (size_t i = 1; i <= rda_size(rdaVec2); i++) {
-    rda_at(rdaVec2, i).x = i;
-    rda_at(rdaVec2, i).y = i * 2;
+    rda_at(rdaVec2, i).x = (double)i;
+    rda_at(rdaVec2, i).y = (double)i * 2;
     printf("x: %lf, y: %lf\n", rda_at(rdaVec2, i).x, rda_at(rdaVec2, i).y);
   }
   rda_free(rdaVec2, &allocator);
