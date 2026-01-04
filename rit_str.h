@@ -72,7 +72,7 @@ static inline rsv rsv_cstr(char *t_cstr, size_t t_len) {
   size_t len = 0;
   for (; len < t_len && t_cstr[len] != '\0'; len++) {
   }
-  return (rsv){.m_size = len, .m_str = (const char *const)t_cstr};
+  return (rsv){.m_size = len, .m_str = t_cstr};
 }
 /// @brief Create a rsv from rstr
 static inline rsv rsv_rstr(struct rstr *t_rstr) {
